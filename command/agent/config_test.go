@@ -19,6 +19,7 @@ import (
 )
 
 func TestConfigEncryptBytes(t *testing.T) {
+	t.Parallel()
 	// Test with some input
 	src := []byte("abc")
 	c := &Config{
@@ -47,6 +48,7 @@ func TestConfigEncryptBytes(t *testing.T) {
 }
 
 func TestDecodeConfig(t *testing.T) {
+	t.Parallel()
 	// Basics
 	input := `{"data_dir": "/tmp/", "log_level": "debug"}`
 	config, err := DecodeConfig(bytes.NewReader([]byte(input)))
@@ -1061,6 +1063,7 @@ func TestDecodeConfig(t *testing.T) {
 }
 
 func TestDecodeConfig_invalidKeys(t *testing.T) {
+	t.Parallel()
 	input := `{"bad": "no way jose"}`
 	_, err := DecodeConfig(bytes.NewReader([]byte(input)))
 	if err == nil || !strings.Contains(err.Error(), "invalid keys") {
@@ -1069,6 +1072,7 @@ func TestDecodeConfig_invalidKeys(t *testing.T) {
 }
 
 func TestRetryJoinEC2(t *testing.T) {
+	t.Parallel()
 	input := `{"retry_join_ec2": {
 	  "region": "us-east-1",
 		"tag_key": "ConsulRole",
@@ -1099,6 +1103,7 @@ func TestRetryJoinEC2(t *testing.T) {
 }
 
 func TestRetryJoinGCE(t *testing.T) {
+	t.Parallel()
 	input := `{"retry_join_gce": {
 	  "project_name": "test-project",
 		"zone_pattern": "us-west1-a",
@@ -1166,6 +1171,7 @@ func TestRetryJoinAzure(t *testing.T) {
 }
 
 func TestDecodeConfig_Performance(t *testing.T) {
+	t.Parallel()
 	input := `{"performance": { "raft_multiplier": 3 }}`
 	config, err := DecodeConfig(bytes.NewReader([]byte(input)))
 	if err != nil {
@@ -1183,6 +1189,7 @@ func TestDecodeConfig_Performance(t *testing.T) {
 }
 
 func TestDecodeConfig_Autopilot(t *testing.T) {
+	t.Parallel()
 	input := `{"autopilot": {
 	  "cleanup_dead_servers": true,
 	  "last_contact_threshold": "100ms",
@@ -1216,6 +1223,7 @@ func TestDecodeConfig_Autopilot(t *testing.T) {
 }
 
 func TestDecodeConfig_Services(t *testing.T) {
+	t.Parallel()
 	input := `{
 		"services": [
 			{
@@ -1331,6 +1339,7 @@ func TestDecodeConfig_Services(t *testing.T) {
 }
 
 func TestDecodeConfig_verifyUniqueListeners(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		cfg  string
@@ -1362,6 +1371,7 @@ func TestDecodeConfig_verifyUniqueListeners(t *testing.T) {
 }
 
 func TestDecodeConfig_Checks(t *testing.T) {
+	t.Parallel()
 	input := `{
 		"checks": [
 			{
@@ -1469,6 +1479,7 @@ func TestDecodeConfig_Checks(t *testing.T) {
 }
 
 func TestDecodeConfig_Multiples(t *testing.T) {
+	t.Parallel()
 	input := `{
 		"services": [
 			{
@@ -1534,6 +1545,7 @@ func TestDecodeConfig_Multiples(t *testing.T) {
 }
 
 func TestDecodeConfig_Service(t *testing.T) {
+	t.Parallel()
 	// Basics
 	input := `{"service": {"id": "red1", "name": "redis", "tags": ["master"], "port":8000, "check": {"script": "/bin/check_redis", "interval": "10s", "ttl": "15s", "DeregisterCriticalServiceAfter": "90m" }}}`
 	config, err := DecodeConfig(bytes.NewReader([]byte(input)))
@@ -1580,6 +1592,7 @@ func TestDecodeConfig_Service(t *testing.T) {
 }
 
 func TestDecodeConfig_Check(t *testing.T) {
+	t.Parallel()
 	// Basics
 	input := `{"check": {"id": "chk1", "name": "mem", "notes": "foobar", "script": "/bin/check_redis", "interval": "10s", "ttl": "15s", "shell": "/bin/bash", "docker_container_id": "redis", "deregister_critical_service_after": "90s" }}`
 	config, err := DecodeConfig(bytes.NewReader([]byte(input)))
@@ -1630,6 +1643,7 @@ func TestDecodeConfig_Check(t *testing.T) {
 }
 
 func TestMergeConfig(t *testing.T) {
+	t.Parallel()
 	a := &Config{
 		Bootstrap:              false,
 		BootstrapExpect:        0,
@@ -1818,6 +1832,7 @@ func TestMergeConfig(t *testing.T) {
 }
 
 func TestReadConfigPaths_badPath(t *testing.T) {
+	t.Parallel()
 	_, err := ReadConfigPaths([]string{"/i/shouldnt/exist/ever/rainbows"})
 	if err == nil {
 		t.Fatal("should have err")
@@ -1825,6 +1840,7 @@ func TestReadConfigPaths_badPath(t *testing.T) {
 }
 
 func TestReadConfigPaths_file(t *testing.T) {
+	t.Parallel()
 	tf := testutil.TempFile(t, "consul")
 	tf.Write([]byte(`{"node_name":"bar"}`))
 	tf.Close()
@@ -1841,6 +1857,7 @@ func TestReadConfigPaths_file(t *testing.T) {
 }
 
 func TestReadConfigPaths_dir(t *testing.T) {
+	t.Parallel()
 	td := testutil.TempDir(t, "consul")
 	defer os.RemoveAll(td)
 
@@ -1881,6 +1898,7 @@ func TestReadConfigPaths_dir(t *testing.T) {
 }
 
 func TestUnixSockets(t *testing.T) {
+	t.Parallel()
 	if p := socketPath("unix:///path/to/socket"); p != "/path/to/socket" {
 		t.Fatalf("bad: %q", p)
 	}
@@ -1890,6 +1908,7 @@ func TestUnixSockets(t *testing.T) {
 }
 
 func TestCheckDefinitionToCheckType(t *testing.T) {
+	t.Parallel()
 	got := &CheckDefinition{
 		ID:     "id",
 		Name:   "name",
